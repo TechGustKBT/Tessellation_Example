@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstring>
 #include <fstream>
+#include "EmbeddedResources.hpp"
 
 namespace simulator {
 uint32_t VulkanRenderer::memoryType(uint32_t mask,VkMemoryPropertyFlags flags) {
@@ -142,13 +143,19 @@ void VulkanRenderer::createTextures(const Simulation& simulation) {
     albedo_=createImage(size,size,levels,VK_FORMAT_R8G8B8A8_SRGB,usage,VK_IMAGE_ASPECT_COLOR_BIT);
     uploadTexture(heightmap_,simulation.heights,size,false,false); uploadTexture(albedo_,simulation.albedo,size,false,true);
     // Textura 2048 x 2048 gerada diretamente das imagens embutidas no GLB.
+
     constexpr int abramsSize = 2048;
-    std::ifstream img(options_.assetDir / "Abrams_BaseColor.rgba", std::ios::binary | std::ios::ate);
-    if (!img || img.tellg() != std::streamoff(abramsSize * abramsSize * 4))
-        throw std::runtime_error("Faltou assets/Abrams_BaseColor.rgba (2048 RGBA).");
-    img.seekg(0);
-    std::vector<uint8_t> rgba(size_t(abramsSize) * abramsSize * 4);
-    img.read(reinterpret_cast<char*>(rgba.data()), std::streamsize(rgba.size()));
+
+    auto resource = getEmbeddedResource(IDR_ABRAMS_TEX);
+
+    if (resource.size != size_t(abramsSize) * abramsSize * 4)
+        throw std::runtime_error("Textura interna do Abrams invalida.");
+
+    std::vector<uint8_t> rgba(
+        resource.data,
+        resource.data + resource.size
+    );
+
     uint32_t abramsLevels = 1;
     for (int n = abramsSize; n > 1; n /= 2) ++abramsLevels;
     abramsTexture_ = createImage(abramsSize,abramsSize,abramsLevels,

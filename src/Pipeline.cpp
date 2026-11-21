@@ -1,21 +1,58 @@
 #include "VulkanRenderer.hpp"
+#include "EmbeddedResources.hpp"
+#include <cstring>
 #include <cstddef>
 #include <fstream>
 #include <iostream>
 
 namespace simulator {
-VkShaderModule VulkanRenderer::shaderModule(const char* name) {
-    auto path=options_.shaderDir/name;
-    std::ifstream file(path,std::ios::binary|std::ios::ate);
-    if(!file) throw std::runtime_error("SPIR-V nao encontrado: "+path.string()+". Compile o alvo simulator_shaders.");
-    std::streamoff length=file.tellg();
-    if(length<20 || length%4!=0) throw std::runtime_error("Tamanho SPIR-V invalido: "+path.string());
-    std::vector<uint32_t> words(size_t(length)/4); file.seekg(0); file.read(reinterpret_cast<char*>(words.data()),std::streamsize(length));
-    if(!file || words[0]!=0x07230203u) throw std::runtime_error("Arquivo SPIR-V invalido: "+path.string());
-    VkShaderModuleCreateInfo info{VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO}; info.codeSize=size_t(length); info.pCode=words.data();
-    VkShaderModule module=VK_NULL_HANDLE; vkCheck(vkCreateShaderModule(device_,&info,nullptr,&module),"criar shader module");
-    std::cout<<"SPIR-V carregado: "<<name<<" ("<<length<<" bytes)\n"; return module;
-}
+
+    VkShaderModule VulkanRenderer::shaderModule(const char* name) {
+        int id = 0;
+
+        if (std::strcmp(name, "tessellation.vert.spv") == 0)
+            id = IDR_TESS_VERT;
+        else if (std::strcmp(name, "tessellation.tesc.spv") == 0)
+            id = IDR_TESS_TESC;
+        else if (std::strcmp(name, "tessellation.tese.spv") == 0)
+            id = IDR_TESS_TESE;
+        else if (std::strcmp(name, "tessellation.frag.spv") == 0)
+            id = IDR_TESS_FRAG;
+        else
+            throw std::runtime_error(
+                std::string("Shader desconhecido: ") + name
+            );
+
+        auto resource = getEmbeddedResource(id);
+
+        if (resource.size < 20 || resource.size % 4 != 0)
+            throw std::runtime_error("Shader SPIR-V interno invalido.");
+
+        std::vector<uint32_t> words(resource.size / sizeof(uint32_t));
+        std::memcpy(words.data(), resource.data, resource.size);
+
+        if (words[0] != 0x07230203u)
+            throw std::runtime_error("Assinatura SPIR-V invalida.");
+
+        VkShaderModuleCreateInfo info{
+            VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO
+        };
+
+        info.codeSize = resource.size;
+        info.pCode = words.data();
+
+        VkShaderModule module = VK_NULL_HANDLE;
+
+        vkCheck(
+            vkCreateShaderModule(device_, &info, nullptr, &module),
+            "criar shader module"
+        );
+
+        std::cout << "Shader interno carregado: "
+            << name << '\n';
+
+        return module;
+    }
 void VulkanRenderer::createPipelines() {
     std::array<VkShaderModule,4> modules{};
     try {

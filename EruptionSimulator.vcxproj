@@ -17,7 +17,14 @@
     <RootNamespace>EruptionSimulator</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+
+	<ItemGroup>
+		<ResourceCompile Include="Embedded.rc" />
+		<ClInclude Include="resource_ids.h" />
+		<ClInclude Include="src\EmbeddedResources.hpp" />
+	</ItemGroup>
+
+	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -77,7 +84,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+		<RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
@@ -115,24 +122,22 @@
     <Error Condition="!Exists('$(VulkanDev)\glfw\lib-vc2022\glfw3.lib')" Text="Biblioteca GLFW nao encontrada: $(VulkanDev)\glfw\lib-vc2022\glfw3.lib" />
     <Error Condition="!Exists('$(VulkanDev)\glm\glm\glm.hpp')" Text="GLM nao encontrado: $(VulkanDev)\glm\glm\glm.hpp" />
   </Target>
-  <Target Name="CompileShaders" AfterTargets="Build">
-    <Error Condition="!Exists('$(SdkRoot)\Bin\glslc.exe')" Text="Compilador shader glslc.exe nao encontrado na pasta VulkanSDK\Bin" />
-    <MakeDir Directories="$(TargetDir)shaders" />
-    <Exec Command="&quot;$(SdkRoot)\Bin\glslc.exe&quot; --target-env=vulkan1.3 -I&quot;$(ProjectDir)shaders&quot; &quot;$(ProjectDir)shaders\tessellation.vert&quot; -o &quot;$(TargetDir)shaders\tessellation.vert.spv&quot;" />
-    <Exec Command="&quot;$(SdkRoot)\Bin\glslc.exe&quot; --target-env=vulkan1.3 -I&quot;$(ProjectDir)shaders&quot; &quot;$(ProjectDir)shaders\tessellation.tesc&quot; -o &quot;$(TargetDir)shaders\tessellation.tesc.spv&quot;" />
-    <Exec Command="&quot;$(SdkRoot)\Bin\glslc.exe&quot; --target-env=vulkan1.3 -I&quot;$(ProjectDir)shaders&quot; &quot;$(ProjectDir)shaders\tessellation.tese&quot; -o &quot;$(TargetDir)shaders\tessellation.tese.spv&quot;" />
-    <Exec Command="&quot;$(SdkRoot)\Bin\glslc.exe&quot; --target-env=vulkan1.3 -I&quot;$(ProjectDir)shaders&quot; &quot;$(ProjectDir)shaders\tessellation.frag&quot; -o &quot;$(TargetDir)shaders\tessellation.frag.spv&quot;" />
-    <Copy SourceFiles="$(ProjectDir)CONTROLES.txt" DestinationFolder="$(TargetDir)" />
 
-	  <MakeDir Directories="$(TargetDir)assets" />
+	<Target Name="CompileShaders" BeforeTargets="ResourceCompile">
+		<Error Condition="!Exists('$(SdkRoot)\Bin\glslc.exe')" Text="glslc.exe nao encontrado." />
 
-	  <Copy
-		SourceFiles="$(ProjectDir)assets\Abrams_Model.tasm;$(ProjectDir)assets\Abrams_BaseColor.rgba"
-		DestinationFolder="$(TargetDir)assets"
-		SkipUnchangedFiles="true" />
+		<MakeDir Directories="$(ProjectDir)shaders\compiled" />
 
-  </Target>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+		<Exec Command="&quot;$(SdkRoot)\Bin\glslc.exe&quot; --target-env=vulkan1.3 -I&quot;$(ProjectDir)shaders&quot; &quot;$(ProjectDir)shaders\tessellation.vert&quot; -o &quot;$(ProjectDir)shaders\compiled\tessellation.vert.spv&quot;" />
+
+		<Exec Command="&quot;$(SdkRoot)\Bin\glslc.exe&quot; --target-env=vulkan1.3 -I&quot;$(ProjectDir)shaders&quot; &quot;$(ProjectDir)shaders\tessellation.tesc&quot; -o &quot;$(ProjectDir)shaders\compiled\tessellation.tesc.spv&quot;" />
+
+		<Exec Command="&quot;$(SdkRoot)\Bin\glslc.exe&quot; --target-env=vulkan1.3 -I&quot;$(ProjectDir)shaders&quot; &quot;$(ProjectDir)shaders\tessellation.tese&quot; -o &quot;$(ProjectDir)shaders\compiled\tessellation.tese.spv&quot;" />
+
+		<Exec Command="&quot;$(SdkRoot)\Bin\glslc.exe&quot; --target-env=vulkan1.3 -I&quot;$(ProjectDir)shaders&quot; &quot;$(ProjectDir)shaders\tessellation.frag&quot; -o &quot;$(ProjectDir)shaders\compiled\tessellation.frag.spv&quot;" />
+	</Target>
+
+	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
     <PropertyGroup Label="UserMacros">
 	    <VulkanDev>$(MSBuildProjectDirectory)\VulkanDev</VulkanDev>

@@ -9,6 +9,8 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include "EmbeddedResources.hpp"
+#include <sstream>
 
 namespace simulator {
 
@@ -153,8 +155,16 @@ namespace simulator {
 
     // Geometria ja convertida do GLB original do usuario: nenhum CMake ou biblioteca extra.
     void Simulation::loadAbrams(const std::string& path) {
-        std::ifstream f(path, std::ios::binary);
-        if (!f) throw std::runtime_error("Modelo Abrams nao encontrado: " + path);
+        (void)path;
+
+        auto resource = getEmbeddedResource(IDR_ABRAMS_MODEL);
+
+        std::string binary(
+            reinterpret_cast<const char*>(resource.data),
+            resource.size
+        );
+
+        std::istringstream f(binary, std::ios::in | std::ios::binary);
 
         char magic[4] = {};
         uint32_t version = 0, count = 0;

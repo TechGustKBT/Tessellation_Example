@@ -1,0 +1,9 @@
+#include "resource_ids.h"
+
+IDR_TESS_VERT RCDATA "shaders\\compiled\\tessellation.vert.spv"
+IDR_TESS_TESC RCDATA "shaders\\compiled\\tessellation.tesc.spv"
+IDR_TESS_TESE RCDATA "shaders\\compiled\\tessellation.tese.spv"
+IDR_TESS_FRAG RCDATA "shaders\\compiled\\tessellation.frag.spv"
+
+IDR_ABRAMS_MODEL RCDATA "assets\\Abrams_Model.tasm"
+IDR_ABRAMS_TEX RCDATA "assets\\Abrams_BaseColor.rgba"

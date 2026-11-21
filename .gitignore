@@ -28,3 +28,9 @@ VulkanDev/VulkanSDK/Lib/SPIRV-Tools-opt.lib
 VulkanDev/VulkanSDK/Lib/SPIRV-Toolsd.lib
 VulkanDev/VulkanSDK/Lib/shaderc_combined.lib
 VulkanDev/VulkanSDK/Lib/glslangd.lib
+
+# Shaders compilados
+shaders/compiled/
+
+# Arquivos gerados pelo Visual Studio
+build/

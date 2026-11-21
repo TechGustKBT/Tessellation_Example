@@ -321,7 +321,7 @@ int main(int argc, char** argv) {
         if (!window) throw std::runtime_error("Falha ao abrir janela.");
 
         App a;
-        a.simulation.loadAbrams((options.assetDir / "Abrams_Model.tasm").string());
+        a.simulation.loadAbrams("");
         VulkanRenderer renderer(window.get(), options);
         a.renderer = &renderer;
 
