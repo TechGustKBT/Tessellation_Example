@@ -19,8 +19,5 @@ F3                  Tessellation adaptativa / fixa
 Esc                 Encerrar
 
 O titulo da janela mostra arma, tessellation, modo visual e GPU selecionada.
-Nao ha jogo de estrategia, cartas, paises, navegador ou assets pagos neste alvo.
-Os disparos e as explosoes sao uma demonstracao procedural, sem fisica balistica completa.
-
 TRILHAS: ao andar, as duas esteiras afundam levemente o terreno e escurecem o solo.
-Apenas girar parado nao produz rastros. Disparos e Tessellation permanecem originais.
+Girar parado produz rastros. Disparos e Tessellation permanecem originais.
