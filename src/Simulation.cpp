@@ -179,7 +179,7 @@ namespace simulator {
         abramsCenter = {header[0], 0.f, header[2]};
         abramsBottom = header[1];
         turretPivot = {header[3], header[4], header[5]};
-        gunPivot = {header[6], header[7], header[8]};
+        gunPivot = { 4.0f, 1.9f, -0.07f };
 
         struct DiskPart {
             char name[64];
@@ -398,6 +398,7 @@ namespace simulator {
             glm::mat4(1.f),
             glm::vec3(tankPosition.x, altura + .06f, tankPosition.y)
         ) * rotacao *
+            glm::rotate(glm::mat4(1.f), glm::radians(hullKick), glm::vec3(0.f, 0.f, 1.f)) *
             glm::scale(glm::mat4(1.f), glm::vec3(.56f)) *
             glm::translate(
                 glm::mat4(1.f),
@@ -534,6 +535,63 @@ namespace simulator {
         cinematicArmed = false;
         aiming = true;
     }
+
+
+    void Simulation::fireManual() {
+        if (paused || cinematicActive || shells.size() >= 12) return;
+
+        aiming = false;
+        targetLocked = false;
+        queuedCinematic = false;
+
+        float baseY = height(tankPosition) +
+            (hasAbrams ? (0.06f + (turretPivot.y - abramsBottom) * 0.56f) : 1.4f);
+
+        float barrelLength = hasAbrams ? 3.32f : COMPRIMENTO_CANO;
+
+        glm::vec3 direcao{
+            std::cos(turretYaw) * std::cos(turretPitch),
+            std::sin(turretPitch),
+            -std::sin(turretYaw) * std::cos(turretPitch)
+        };
+
+        glm::vec3 boca = glm::vec3(tankPosition.x, baseY, tankPosition.y)
+            + direcao * barrelLength;
+
+        // Morteiro utiliza menor velocidade para criar uma trajetoria em arco.
+        float velocidade = weapon == 1 ? 16.f : velocidadeDaArma(weapon);
+
+        glm::vec3 velocidadeInicial = direcao * velocidade;
+
+        uint32_t id = nextShellId++;
+
+        shells.push_back({ boca, velocidadeInicial, 0.f, weapon, id });
+        recoilTimer = 0.f;
+        gunRecoil = 0.f;
+        recoilStrength = weapon == 0 ? 1.f : 0.55f;
+        shotTrails.push_back({ boca, velocidadeInicial, 0.f, 0.f, id, false });
+
+        // O modo morteiro sempre ativa a camera cinematografica.
+        if (weapon == 1 || cinematicArmed) {
+            cinematicActive = true;
+            cinematicShellId = id;
+            cinematicHold = 0.f;
+
+            glm::vec3 lado{
+                std::sin(turretYaw),
+                0.f,
+                std::cos(turretYaw)
+            };
+
+            cinematicEye = boca - direcao * 3.5f
+                + lado + glm::vec3(0.f, 1.f, 0.f);
+
+            cinematicLook = boca + direcao * 1.4f;
+        }
+
+        cinematicArmed = false;
+    }
+
 
     void Simulation::paintTrack(glm::vec2 point, float radius, bool turning) {
         glm::vec2 pixel = (point / terrainSize + .5f) * float(textureSize) - .5f;
@@ -672,6 +730,29 @@ namespace simulator {
         dt = glm::clamp(dt, 0.f, .05f);
         time += dt;
 
+
+        if (recoilTimer >= 0.f) {
+            recoilTimer += dt;
+
+            const float recuo = 0.08f;
+            const float retorno = 0.38f;
+
+            if (recoilTimer < recuo) {
+                gunRecoil = glm::smoothstep(0.f, recuo, recoilTimer);
+            }
+            else if (recoilTimer < recuo + retorno) {
+                gunRecoil = 1.f - glm::smoothstep(recuo, recuo + retorno, recoilTimer);
+            }
+            else {
+                gunRecoil = 0.f;
+                recoilTimer = -1.f;
+            }
+
+            gunRecoil *= recoilStrength;
+            hullKick = gunRecoil * 0.6f;
+        }
+
+
         if (tracksPending) {
             trackTimer += dt;
             if (trackTimer >= .10f) {
@@ -693,8 +774,8 @@ namespace simulator {
 
             turretPitch = glm::clamp(
                 turretPitch,
-                glm::radians(-10.f),
-                glm::radians(20.f)
+                glm::radians(weapon == 1 ? 0.f : -10.f),
+                glm::radians(weapon == 1 ? 90.f : 10.f)
             );
         }
 
@@ -770,7 +851,7 @@ namespace simulator {
             if (tr.finished) tr.fade += dt;
 
         // Camera cinematografica desacelera apenas o tempo de voo.
-        float flightDt = dt * (cinematicActive ? .02f : 1.f);
+        float flightDt = dt * (cinematicActive ? (weapon == 1 ? .45f : .02f) : 1.f);
 
         for (size_t i = 0; i < shells.size();) {
             auto& shell = shells[i];
@@ -854,8 +935,15 @@ namespace simulator {
             if (found != shells.end()) {
                 glm::vec3 pos = pontoBalistico(found->start, found->velocity, found->age);
                 glm::vec3 v = found->velocity + glm::vec3(0.f, -GRAVIDADE * found->age, 0.f);
-                glm::vec3 direcao = glm::normalize(v);
-                glm::vec3 lado = glm::normalize(glm::cross(direcao, glm::vec3(0, 1, 0)));
+                glm::vec3 direcao = glm::length(v) > 0.001f
+                    ? glm::normalize(v)
+                    : glm::vec3(0.f, 1.f, 0.f);
+
+                glm::vec3 lado{
+                    std::sin(turretYaw),
+                    0.f,
+                    std::cos(turretYaw)
+                };
 
                 glm::vec3 eye = pos - direcao * 3.5f + lado + glm::vec3(0, 1.f, 0);
                 eye.y = std::max(eye.y, height({ eye.x, eye.z }) + .5f);
@@ -900,6 +988,11 @@ namespace simulator {
         queuedCinematic = false;
         cinematicShellId = 0;
         cinematicHold = 0.f;
+
+        gunRecoil = 0.f;
+        recoilTimer = -1.f;
+        recoilStrength = 1.f;
+        hullKick = 0.f;
 
         recenterCamera();
         followTank(0.f);
@@ -952,7 +1045,13 @@ namespace simulator {
                     }
                     glm::mat4 transform = root;
                     if (part.type == 1) transform *= towerRotation;
-                    if (part.type == 2) transform *= towerRotation * gunRotation;
+                    if (part.type == 2) {
+                        const float deslocamento = (0.305f / METROS_POR_UNIDADE) / 0.56f;
+
+                        transform *= towerRotation * gunRotation *
+                            glm::translate(glm::mat4(1.f),
+                                glm::vec3(-gunRecoil * deslocamento, 0.f, 0.f));
+                    }
                     if (part.type == 3 || part.type == 4) {
                         float movement = part.type == 3 ? trackLeftMotion : trackRightMotion;
                         transform *= rotateAround(part.pivot, movement / .35f,

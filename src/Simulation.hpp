@@ -88,6 +88,10 @@ namespace simulator {
         glm::vec2 tankPosition{ -8.f, -5.f };
         float tankYaw = 0.f;
         float turretYaw = 0.f, turretPitch = 0.f;
+        float gunRecoil = 0.f;
+        float recoilTimer = -1.f;
+        float recoilStrength = 1.f;
+        float hullKick = 0.f;
 
         bool aiming = false;
         bool cinematicArmed = false;
@@ -130,6 +134,7 @@ namespace simulator {
         void regenerate();
         void impact(glm::vec3 target);
         void fire(glm::vec3 target);
+        void fireManual();
         void followTank(float dt);
         void recenterCamera();
         void tick(float dt);

@@ -32,14 +32,33 @@ static void keys(GLFWwindow* window, int key, int, int action, int) {
     case GLFW_KEY_ESCAPE:
         glfwSetWindowShouldClose(window, GLFW_TRUE);
         break;
+
     case GLFW_KEY_SPACE:
+        s.fireManual();
+        break;
+
+    case GLFW_KEY_P:
         s.paused = !s.paused;
         break;
+
     case GLFW_KEY_1:
+        if (s.cinematicActive) break;
         s.weapon = 0;
+        s.aiming = false;
+        s.targetLocked = false;
+        s.cinematicArmed = false;
+        s.turretPitch = glm::clamp(s.turretPitch, glm::radians(-10.f), glm::radians(10.f));
+        s.sightPitch = s.turretPitch;
         break;
+
     case GLFW_KEY_2:
+        if (s.cinematicActive) break;
         s.weapon = 1;
+        s.aiming = false;
+        s.targetLocked = false;
+        s.cinematicArmed = false;
+        s.turretPitch = std::max(0.f, s.turretPitch);
+        s.sightPitch = s.turretPitch;
         break;
     case GLFW_KEY_F5:
         s.newTerrain();
@@ -101,8 +120,8 @@ static void move(GLFWwindow* window, double x, double y) {
 
             s.sightPitch = glm::clamp(
                 s.sightPitch - dy * .0045f,
-                glm::radians(-10.f),
-                glm::radians(20.f)
+                glm::radians(s.weapon == 1 ? 0.f : -10.f),
+                glm::radians(s.weapon == 1 ? 90.f : 10.f)
             );
 
             // Movimentar a mira cancela o alvo previamente fixado.
@@ -179,6 +198,7 @@ static void click(GLFWwindow* window, int button, int action, int) {
 
     if (button != GLFW_MOUSE_BUTTON_LEFT ||
         action != GLFW_PRESS ||
+        s.weapon == 1 ||
         s.paused ||
         s.cinematicActive)
         return;
@@ -234,16 +254,33 @@ static void input(GLFWwindow* window, Simulation& s, float dt) {
         down(GLFW_KEY_LEFT_SHIFT) || down(GLFW_KEY_RIGHT_SHIFT)
     );
 
-    if (!s.cinematicActive && !s.firstPerson) {
-        s.cameraYaw +=
-            (float(down(GLFW_KEY_LEFT)) - float(down(GLFW_KEY_RIGHT))) * dt * 1.6f;
 
-        s.cameraPitch = std::clamp(
-            s.cameraPitch +
-            (float(down(GLFW_KEY_DOWN)) - float(down(GLFW_KEY_UP))) * dt * 1.2f,
-            -1.2f, 1.3f
-        );
+    if (!s.paused && !s.cinematicActive) {
+        float giro = float(down(GLFW_KEY_LEFT)) - float(down(GLFW_KEY_RIGHT));
+        float elevacao = float(down(GLFW_KEY_UP)) - float(down(GLFW_KEY_DOWN));
+
+        if (giro != 0.f || elevacao != 0.f) {
+            s.aiming = false;
+            s.targetLocked = false;
+            s.queuedCinematic = false;
+
+            s.turretYaw += giro * glm::radians(50.f) * dt;
+            s.turretYaw = std::remainder(s.turretYaw, glm::radians(360.f));
+
+
+            s.turretPitch = glm::clamp(
+                s.turretPitch + elevacao * glm::radians(29.f) * dt,
+                glm::radians(s.weapon == 1 ? 0.f : -10.f),
+                glm::radians(s.weapon == 1 ? 90.f : 10.f)
+            );
+
+            if (s.firstPerson) {
+                s.sightYaw = s.turretYaw;
+                s.sightPitch = s.turretPitch;
+            }
+        }
     }
+
 }
 
 int main(int argc, char** argv) {
