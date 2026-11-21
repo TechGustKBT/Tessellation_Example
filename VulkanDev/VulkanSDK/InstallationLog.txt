@@ -1,0 +1,116 @@
+************************************* Invoked: Fri Nov 20 16:05:13 2026
+[0] Arguments: C:\Users\silve\Downloads\vulkansdk-windows-X64-1.4.363.1.exe, --root, C:\Users\silve\VulkanDev\VulkanSDK, --accept-licenses, --default-answer, --confirm-command, install, copy_only=1
+[7] Operations sanity check succeeded.
+[12] Using metadata cache from "C:/Users/silve/AppData/Local/cache\\qt-installer-framework\\f179a469-966f-32c6-89e2-2cff78cc1f76"
+[12] Found 0 cached items.
+[14] Loaded control script ":/metadata/installer-config/installscript_qs"
+[16] Fetching latest update information...
+[18] Downloading 1 items to cache.
+[18] Retrieving information from remote repositories...
+[1232] Retrieving meta information from remote repository...
+[2306] Extracting meta information...
+[2317] Updating local cache with 1 new items...
+[2331] Loading component scripts...
+[2336] License "MIT 2.0 or Apache" accepted by user.
+[2337] Loading component scripts...
+[2338] Warning: QFont::setPixelSize: Pixel size <= 0 (-1)
+[2339] Selected components without dependencies:
+com.lunarg.vulkan 
+com.lunarg.vulkan.core
+[2343] Installation space required: "1.74 GB"
+[2343] Temporary space required: "0.00 bytes"
+[2347] Cache and install directories are on the same volume. Volume mount point: "C:\\" Free space available: "218.49 GB"
+[2349] Installation will use 1.74 GB of disk space.
+[2352] backup  operation: Mkdir
+[2353] 	- arguments: C:/Users/silve/VulkanDev/VulkanSDK
+[2354] Done
+[2355] perform  operation: Mkdir
+[2355] 	- arguments: C:/Users/silve/VulkanDev/VulkanSDK
+[2358] Done
+[2359] Preparing the installation...
+[2359] Install size: 2 components
+[2410] Preparing to unpack components...
+[2415] backup com.lunarg.vulkan.core concurrent operation: Extract
+[2419] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1Bin.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2423] Started
+[2428] backup com.lunarg.vulkan.core concurrent operation: Extract
+[2429] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1cmake.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2431] Started
+[2432] backup com.lunarg.vulkan.core concurrent operation: Extract
+[2433] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1Config.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2435] Started
+[2435] backup com.lunarg.vulkan.core concurrent operation: Extract
+[2437] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1content.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2439] Started
+[2439] backup com.lunarg.vulkan.core concurrent operation: Extract
+[2440] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1Lib.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2442] Started
+[2443] backup com.lunarg.vulkan.core concurrent operation: Extract
+[2444] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1share.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2446] Started
+[2446] backup com.lunarg.vulkan.core concurrent operation: Extract
+[2448] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1Source.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2450] Started
+[2450] backup com.lunarg.vulkan.core concurrent operation: Extract
+[2452] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1Include.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2454] Started
+[2454] backup com.lunarg.vulkan.core concurrent operation: Extract
+[2455] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1Templates.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2458] Started
+[2458] backup com.lunarg.vulkan.core concurrent operation: Extract
+[2459] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1Helpers.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2461] Started
+[2464] Unpacking components...
+[2465] perform com.lunarg.vulkan.core concurrent operation: Extract
+[2467] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1Bin.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2470] Started
+[2471] perform com.lunarg.vulkan.core concurrent operation: Extract
+[2474] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1Lib.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2480] Started
+[2482] perform com.lunarg.vulkan.core concurrent operation: Extract
+[2488] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1Helpers.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2499] Started
+[2500] perform com.lunarg.vulkan.core concurrent operation: Extract
+[2503] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1Include.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2506] Started
+[2506] perform com.lunarg.vulkan.core concurrent operation: Extract
+[2508] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1share.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2511] Started
+[2512] perform com.lunarg.vulkan.core concurrent operation: Extract
+[2515] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1Source.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2519] Started
+[2520] perform com.lunarg.vulkan.core concurrent operation: Extract
+[2522] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1Config.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2525] Started
+[2525] perform com.lunarg.vulkan.core concurrent operation: Extract
+[2528] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1Templates.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2531] Started
+[2531] perform com.lunarg.vulkan.core concurrent operation: Extract
+[2533] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1content.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2536] Started
+[2536] perform com.lunarg.vulkan.core concurrent operation: Extract
+[2538] 	- arguments: installer://com.lunarg.vulkan.core/1.4.363.1cmake.7z, C:/Users/silve/VulkanDev/VulkanSDK
+[2541] Started
+[11141] Installing component The Vulkan SDK
+[11144] backup com.lunarg.vulkan operation: License
+[11146] 	- arguments:
+[11146] Done
+[11147] perform com.lunarg.vulkan operation: License
+[11149] 	- arguments:
+[11152] Done
+[11154] Installing component The Vulkan SDK Core (Always Installed)
+[11157] backup com.lunarg.vulkan.core operation: License
+[11158] 	- arguments:
+[11159] Done
+[11160] perform com.lunarg.vulkan.core operation: License
+[11161] 	- arguments:
+[11164] Done
+[11172] Writing maintenance tool: "C:/Users/silve/VulkanDev/VulkanSDK/maintenancetool.exe.new"
+[11174] Writing maintenance tool.
+[11252] Wrote permissions for maintenance tool.
+[11995] Maintenance tool hard restart: false.
+[11999] Installation finished!
+[12044] perform  operation: Delete
+[12046] 	- arguments: C:/Users/silve/VulkanDev/VulkanSDK/Helpers/VC_redist.x64.exe
+[12050] Done
+[12060] Components installed successfully.

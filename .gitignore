@@ -1,0 +1,30 @@
+
+# Visual Studio
+.vs/
+build/
+x64/
+Debug/
+Release/
+*.user
+*.suo
+*.obj
+*.pdb
+*.ilk
+*.tlog
+*.lastbuildstate
+
+# Modelo Blender original (muito grande)
+assets/*.glb
+*.blend
+*.blend1
+
+# Arquivos temporarios
+*.tmp
+*.log
+
+# Bibliotecas grandes do SDK desnecessarias para este projeto
+VulkanDev/VulkanSDK/Lib/SPIRV-Tools-optd.lib
+VulkanDev/VulkanSDK/Lib/SPIRV-Tools-opt.lib
+VulkanDev/VulkanSDK/Lib/SPIRV-Toolsd.lib
+VulkanDev/VulkanSDK/Lib/shaderc_combined.lib
+VulkanDev/VulkanSDK/Lib/glslangd.lib

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{A1B36EB8-DBAC-4BA1-B77B-A1BCF4BBC4EC}</ProjectGuid>
+    <RootNamespace>EruptionSimulator</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+<PropertyGroup>
+	<VulkanDev>$(MSBuildProjectDirectory)\VulkanDev</VulkanDev>
+	<SdkRoot>$(VulkanDev)\VulkanSDK</SdkRoot>
+	<OutDir>$(ProjectDir)build\$(Platform)\$(Configuration)\</OutDir>
+	<IntDir>$(ProjectDir)build\obj\$(Platform)\$(Configuration)\</IntDir>
+	<TargetName>eruption_simulator</TargetName>
+	<LinkIncremental Condition="'$(Configuration)'=='Release'">false</LinkIncremental>
+</PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_VULKAN;GLFW_INCLUDE_NONE;GLM_FORCE_RADIANS;GLM_FORCE_DEPTH_ZERO_TO_ONE;GLM_ENABLE_EXPERIMENTAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SdkRoot)\Include;$(VulkanDev)\glfw\include;$(VulkanDev)\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>$(SdkRoot)\Lib;$(VulkanDev)\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;gdi32.lib;user32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Pipeline.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\Resources.cpp" />
+    <ClCompile Include="src\Simulation.cpp" />
+    <ClCompile Include="src\Swapchain.cpp" />
+    <ClCompile Include="src\VulkanDevice.cpp" />
+    <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Simulation.hpp" />
+    <ClInclude Include="src\VulkanRenderer.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\common.glsl" />
+    <None Include="shaders\tessellation.frag" />
+    <None Include="shaders\tessellation.tesc" />
+    <None Include="shaders\tessellation.tese" />
+    <None Include="shaders\tessellation.vert" />
+    <None Include="CONTROLES.txt" />
+  </ItemGroup>
+  <Target Name="CheckDependencies" BeforeTargets="ClCompile">
+    <Error Condition="!Exists('$(SdkRoot)\Include\vulkan\vulkan.h')" Text="Vulkan SDK nao encontrado: verifique a pasta $(SdkRoot)\Include" />
+    <Error Condition="!Exists('$(SdkRoot)\Lib\vulkan-1.lib')" Text="Biblioteca Vulkan nao encontrada: $(SdkRoot)\Lib\vulkan-1.lib" />
+    <Error Condition="!Exists('$(VulkanDev)\glfw\include\GLFW\glfw3.h')" Text="GLFW nao encontrado: $(VulkanDev)\glfw\include\GLFW\glfw3.h" />
+    <Error Condition="!Exists('$(VulkanDev)\glfw\lib-vc2022\glfw3.lib')" Text="Biblioteca GLFW nao encontrada: $(VulkanDev)\glfw\lib-vc2022\glfw3.lib" />
+    <Error Condition="!Exists('$(VulkanDev)\glm\glm\glm.hpp')" Text="GLM nao encontrado: $(VulkanDev)\glm\glm\glm.hpp" />
+  </Target>
+  <Target Name="CompileShaders" AfterTargets="Build">
+    <Error Condition="!Exists('$(SdkRoot)\Bin\glslc.exe')" Text="Compilador shader glslc.exe nao encontrado na pasta VulkanSDK\Bin" />
+    <MakeDir Directories="$(TargetDir)shaders" />
+    <Exec Command="&quot;$(SdkRoot)\Bin\glslc.exe&quot; --target-env=vulkan1.3 -I&quot;$(ProjectDir)shaders&quot; &quot;$(ProjectDir)shaders\tessellation.vert&quot; -o &quot;$(TargetDir)shaders\tessellation.vert.spv&quot;" />
+    <Exec Command="&quot;$(SdkRoot)\Bin\glslc.exe&quot; --target-env=vulkan1.3 -I&quot;$(ProjectDir)shaders&quot; &quot;$(ProjectDir)shaders\tessellation.tesc&quot; -o &quot;$(TargetDir)shaders\tessellation.tesc.spv&quot;" />
+    <Exec Command="&quot;$(SdkRoot)\Bin\glslc.exe&quot; --target-env=vulkan1.3 -I&quot;$(ProjectDir)shaders&quot; &quot;$(ProjectDir)shaders\tessellation.tese&quot; -o &quot;$(TargetDir)shaders\tessellation.tese.spv&quot;" />
+    <Exec Command="&quot;$(SdkRoot)\Bin\glslc.exe&quot; --target-env=vulkan1.3 -I&quot;$(ProjectDir)shaders&quot; &quot;$(ProjectDir)shaders\tessellation.frag&quot; -o &quot;$(TargetDir)shaders\tessellation.frag.spv&quot;" />
+    <Copy SourceFiles="$(ProjectDir)CONTROLES.txt" DestinationFolder="$(TargetDir)" />
+
+	  <MakeDir Directories="$(TargetDir)assets" />
+
+	  <Copy
+		SourceFiles="$(ProjectDir)assets\Abrams_Model.tasm;$(ProjectDir)assets\Abrams_BaseColor.rgba"
+		DestinationFolder="$(TargetDir)assets"
+		SkipUnchangedFiles="true" />
+
+  </Target>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+    <PropertyGroup Label="UserMacros">
+	    <VulkanDev>$(MSBuildProjectDirectory)\VulkanDev</VulkanDev>
+    </PropertyGroup>
+</Project>

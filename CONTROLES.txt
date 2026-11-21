@@ -1,0 +1,26 @@
+ERUPTION - SIMULADOR 3D VULKAN / TESSELLATION
+
+W / S               Andar para frente / marcha a re
+A / D               Girar o tanque
+Shift + W / S       Acelerar o tanque
+Setas               Mover a camera sobre o terreno
+Mouse direito/meio  Segurar e arrastar para orbitar
+Roda do mouse       Aproximar / afastar
+Home                Restaurar a camera
+Clique esquerdo     Disparar no ponto do terreno
+1                   Disparo de tanque (arco baixo)
+2                   Disparo de artilharia (arco alto)
+Espaco              Pausar / continuar a simulacao
+R                   Remover crateras, efeitos e rastros; reposicionar tanque
+F1                  Malha / solido (se a GPU suportar)
+F2                  Mostrar normais da superficie
+F3                  Tessellation adaptativa / fixa
++ / -               Aumentar / reduzir subdivisao (2 a 64, limitado pela GPU)
+Esc                 Encerrar
+
+O titulo da janela mostra arma, tessellation, modo visual e GPU selecionada.
+Nao ha jogo de estrategia, cartas, paises, navegador ou assets pagos neste alvo.
+Os disparos e as explosoes sao uma demonstracao procedural, sem fisica balistica completa.
+
+TRILHAS: ao andar, as duas esteiras afundam levemente o terreno e escurecem o solo.
+Apenas girar parado nao produz rastros. Disparos e Tessellation permanecem originais.

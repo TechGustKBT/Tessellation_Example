@@ -1,0 +1,31 @@
+ERUPTION SIMULATOR - ORIGINAL + TANQUE MOVEL E ESTEIRAS
+
+BASE: EruptionSimulator_VS2022_Sem_CMake(2).zip (enviado pelo usuario).
+MUDANCAS PONTUAIS: src/Simulation.hpp, src/Simulation.cpp, src/main.cpp.
+O codigo Vulkan, os shaders GLSL, o sistema de crateras, os disparos e o pipeline nao foram alterados.
+O arquivo .vcxproj apenas passa a usar caminhos de bibliotecas do usuario do Windows e a variavel VULKAN_SDK.
+
+MOVIMENTACAO:
+W/S = andar para frente / marcha a re.
+A/D = girar o tanque.
+SHIFT + W/S = acelerar.
+SETAS = mover a camera (antes tambem usava WASD).
+R = apagar crateras e rastros, devolver o tanque ao inicio.
+
+ESTEIRAS:
+- As duas esteiras fazem pequenas depressões no mapa de alturas e escurecem o solo.
+- Sao dois sulcos paralelos. Nao ha explosao, cratera nem particulas ao andar.
+- So gera rastros quando o tanque efetivamente se desloca.
+- A textura do terreno e atualizada em intervalos de ~0,05s para evitar upload a cada frame.
+
+PARA RODAR NO VISUAL STUDIO 2022 (WINDOWS):
+1) Extraia todo este ZIP.
+2) Abra EruptionSimulator.sln.
+3) Instale o Vulkan SDK da LunarG (que define VULKAN_SDK) ou copie o SDK para %USERPROFILE%\VulkanDev\VulkanSDK.
+4) Coloque GLFW em %USERPROFILE%\VulkanDev\glfw (include/GLFW/glfw3.h e lib-vc2022/glfw3.lib).
+5) Coloque GLM em %USERPROFILE%\VulkanDev\glm (glm/glm.hpp).
+6) Selecione Release | x64 e clique com botao direito no projeto > Build.
+7) Os shaders .spv sao criados apos a compilacao. Execute com Ctrl+F5.
+
+IMPORTANTE: este pacote contem codigo-fonte, NAO as bibliotecas comerciais/SDK e NAO um executavel pronto.
+Estrutura e modificacoes verificadas; a compilacao Windows/Vulkan nao pode ser executada neste ambiente.

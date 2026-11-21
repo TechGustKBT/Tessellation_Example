@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files"><UniqueIdentifier>{80CCDE78-6C4D-44B2-B064-0822566054B7}</UniqueIdentifier></Filter>
+    <Filter Include="Header Files"><UniqueIdentifier>{D98EC82E-CB40-4FD4-9841-F2E5C91E849F}</UniqueIdentifier></Filter>
+    <Filter Include="Shaders"><UniqueIdentifier>{F81F77B5-A302-42E7-B5BF-2F783D219340}</UniqueIdentifier></Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Pipeline.cpp"><Filter>Source Files</Filter></ClCompile>
+    <ClCompile Include="src\Renderer.cpp"><Filter>Source Files</Filter></ClCompile>
+    <ClCompile Include="src\Resources.cpp"><Filter>Source Files</Filter></ClCompile>
+    <ClCompile Include="src\Simulation.cpp"><Filter>Source Files</Filter></ClCompile>
+    <ClCompile Include="src\Swapchain.cpp"><Filter>Source Files</Filter></ClCompile>
+    <ClCompile Include="src\VulkanDevice.cpp"><Filter>Source Files</Filter></ClCompile>
+    <ClCompile Include="src\main.cpp"><Filter>Source Files</Filter></ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Simulation.hpp"><Filter>Header Files</Filter></ClInclude>
+    <ClInclude Include="src\VulkanRenderer.hpp"><Filter>Header Files</Filter></ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\common.glsl"><Filter>Shaders</Filter></None>
+    <None Include="shaders\tessellation.frag"><Filter>Shaders</Filter></None>
+    <None Include="shaders\tessellation.tesc"><Filter>Shaders</Filter></None>
+    <None Include="shaders\tessellation.tese"><Filter>Shaders</Filter></None>
+    <None Include="shaders\tessellation.vert"><Filter>Shaders</Filter></None>
+    <None Include="CONTROLES.txt" />
+  </ItemGroup>
+</Project>

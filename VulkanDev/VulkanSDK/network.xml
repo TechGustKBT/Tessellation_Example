@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<Network>
+    <ProxyType>1</ProxyType>
+    <Ftp>
+        <Host></Host>
+        <Port>0</Port>
+        <Username></Username>
+        <Password></Password>
+    </Ftp>
+    <Http>
+        <Host></Host>
+        <Port>0</Port>
+        <Username></Username>
+        <Password></Password>
+    </Http>
+    <Repositories/>
+    <LocalCachePath>C:/Users/silve/AppData/Local/cache\qt-installer-framework\f179a469-966f-32c6-89e2-2cff78cc1f76</LocalCachePath>
+</Network>
