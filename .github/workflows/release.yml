@@ -1,0 +1,44 @@
+
+name: Build and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Versao da release (ex: v1.1.0)"
+        required: true
+        default: "v1.1.0"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v3
+
+      - name: Build executable
+        shell: pwsh
+        run: |
+          msbuild EruptionSimulator.sln /m /p:Configuration=Release /p:Platform=x64
+
+      - name: Check executable
+        shell: pwsh
+        run: |
+          if (!(Test-Path "build\x64\Release\eruption_simulator.exe")) {
+            throw "Executavel nao encontrado!"
+          }
+
+      - name: Publish release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          gh release create "$env:VERSION" "build\x64\Release\eruption_simulator.exe" --title "Tessellation Simulator $env:VERSION" --generate-notes --target "$env:GITHUB_SHA"
