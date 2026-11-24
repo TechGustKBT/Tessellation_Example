@@ -9,107 +9,113 @@
 
 using namespace simulator;
 
+//Oi auto-complete do chat, me ajude a comentar o que cada linha faz
+
 struct App {
-    Simulation simulation;
-    VulkanRenderer* renderer = nullptr;
-    double mouseX = 0, mouseY = 0;
-    bool mouseKnown = false;
-    float timeScale = 1.f;
-    double lastRightClick = -1.0;
+    Simulation simulation; // Instância da simulação que gerencia o estado do jogo.
+    VulkanRenderer* renderer = nullptr; // Ponteiro para o renderizador Vulkan usado para desenhar a simulação.
+    double mouseX = 0, mouseY = 0; // Coordenadas atuais do mouse.
+    bool mouseKnown = false; // Indica se a posição do mouse é conhecida.
+    float timeScale = 1.f; // Fator de escala de tempo da simulação.
+    double lastRightClick = -1.0; // Armazena o tempo do último clique direito do mouse.
 };
 
 static App& app(GLFWwindow* window) {
-    return *static_cast<App*>(glfwGetWindowUserPointer(window));
+    return *static_cast<App*>(glfwGetWindowUserPointer(window)); // Retorna a instância do App associada à janela GLFW (Get Window User Pointer).
 }
-
+// Função de callback para eventos de teclado GLFW.
+//Window: ponteiro para a janela GLFW que gerou o evento de teclado.
+//key: código da tecla que gerou o evento.
+//action: ação do teclado (pressionado, liberado, repetido).
 static void keys(GLFWwindow* window, int key, int, int action, int) {
-    if (action != GLFW_PRESS) return;
+    if (action != GLFW_PRESS) return; // Ignora eventos que não sejam pressionamento de tecla.
 
-    auto& a = app(window);
-    auto& s = a.simulation;
+    auto& a = app(window); // Obtém a instância do App associada à janela GLFW.
+    auto& s = a.simulation; // Obtém a instância da simulação a partir do App.
 
-    switch (key) {
-    case GLFW_KEY_ESCAPE:
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
-        break;
+    switch (key) { // Verifica qual tecla foi pressionada e executa a ação correspondente.
+        case GLFW_KEY_ESCAPE: // Fecha a janela e encerra o programa quando a tecla ESC é pressionada.
+            glfwSetWindowShouldClose(window, GLFW_TRUE); // Sinaliza para a janela GLFW que ela deve ser fechada.
+            break;
 
-    case GLFW_KEY_SPACE:
-        s.fireManual();
-        break;
+        case GLFW_KEY_SPACE: // Dispara manualmente a arma quando a tecla ESPAÇO é pressionada.
+            s.fireManual();
+            break;
 
-    case GLFW_KEY_P:
-        s.paused = !s.paused;
-        break;
+        case GLFW_KEY_P: // Pausa ou retoma a simulação quando a tecla P é pressionada.
+            s.paused = !s.paused;
+            break;
 
-    case GLFW_KEY_1:
-        if (s.cinematicActive) break;
-        s.weapon = 0;
-        s.aiming = false;
-        s.targetLocked = false;
-        s.cinematicArmed = false;
-        s.turretPitch = glm::clamp(s.turretPitch, glm::radians(-10.f), glm::radians(10.f));
-        s.sightPitch = s.turretPitch;
-        break;
+        case GLFW_KEY_1: // Seleciona a arma 1, se a cinemática não estiver ativa quando a tecla 1 é pressionada.
+            if (s.cinematicActive) break; // Se a cinemática estiver ativa, não permite mudar a arma.
+            s.weapon = 0; // Define a arma atual como a arma 1.
+            s.aiming = false; // Desativa o modo de mira.
+            s.targetLocked = false; // Destrava o alvo atual.
+            s.cinematicArmed = false; // Desativa o modo cinemático armado.
+            s.turretPitch = glm::clamp(s.turretPitch, glm::radians(-10.f), glm::radians(10.f)); // Limita o ângulo de inclinação da torre.
+            s.sightPitch = s.turretPitch; // Sincroniza a inclinação da mira com a torre.
+            break;
 
-    case GLFW_KEY_2:
-        if (s.cinematicActive) break;
-        s.weapon = 1;
-        s.aiming = false;
-        s.targetLocked = false;
-        s.cinematicArmed = false;
-        s.turretPitch = std::max(0.f, s.turretPitch);
-        s.sightPitch = s.turretPitch;
-        break;
-    case GLFW_KEY_F5:
-        s.newTerrain();
-        break;
-    case GLFW_KEY_C:
-    case GLFW_KEY_HOME:
-        s.recenterCamera();
-        break;
-    case GLFW_KEY_V:
-        if (s.cinematicActive) {
-            s.cinematicActive = false;
-            s.cinematicShellId = 0;
-            s.recenterCamera();
-        }
-        else {
-            s.cinematicArmed = !s.cinematicArmed;
-        }
-        break;
-    case GLFW_KEY_F1:
-        if (a.renderer->wireframeSupported())
-            s.wireframe = !s.wireframe;
-        break;
-    case GLFW_KEY_F2:
-        s.normals = !s.normals;
-        break;
-    case GLFW_KEY_F3:
-        s.adaptive = !s.adaptive;
-        break;
-    case GLFW_KEY_EQUAL:
-    case GLFW_KEY_KP_ADD:
-        s.maxTess = std::min(s.maxTess * 2,
-            float(std::min(64u, a.renderer->maxTessellation())));
-        break;
-    case GLFW_KEY_MINUS:
-    case GLFW_KEY_KP_SUBTRACT:
-        s.maxTess = std::max(s.maxTess * .5f, 2.f);
-        break;
-    case GLFW_KEY_T:
-        a.timeScale = std::max(0.03125f, a.timeScale * 0.5f);
-        break;
-
-    case GLFW_KEY_Y:
-        a.timeScale = 1.f;
-        break;
+        case GLFW_KEY_2: // Seleciona a arma 2, se a cinemática não estiver ativa quando a tecla 2 é pressionada.
+            if (s.cinematicActive) break; // Se a cinemática estiver ativa, não permite mudar a arma.
+            s.weapon = 1; // Define a arma atual como a arma 2.
+            s.aiming = false; // Desativa o modo de mira.
+            s.targetLocked = false; // Destrava o alvo atual.
+            s.cinematicArmed = false; // Desativa o modo cinemático armado.
+            s.turretPitch = std::max(0.f, s.turretPitch); // Limita o ângulo de inclinação da torre para não ser negativo.
+            s.sightPitch = s.turretPitch; // Sincroniza a inclinação da mira com a torre.
+            break;
+        case GLFW_KEY_F5: // Gera um novo terreno quando a tecla F5 é pressionada.
+            s.newTerrain(); // Chama a função que gera um novo terreno. Isso é meio óbvio.
+            break;
+        case GLFW_KEY_C: // Recentra a câmera quando a tecla C é pressionada.
+        case GLFW_KEY_HOME: // Recentra a câmera quando a tecla HOME é pressionada.
+            s.recenterCamera(); // Recentra a câmera.
+            break;
+        case GLFW_KEY_V: // Alterna o modo cinemático quando a tecla V é pressionada.
+            if (s.cinematicActive) { // Se o modo cinemático estiver ativo, desativa-o.
+                s.cinematicActive = false; // Desativa o modo cinemático, sério, eu preciso explicar isso?
+                s.cinematicShellId = 0; // Reseta o ID do projétil cinemático.
+                s.recenterCamera();
+            }
+            else { // Se o modo cinemático não estiver ativo, alterna o estado de armado cinemático.
+                s.cinematicArmed = !s.cinematicArmed; // Alterna o estado de armado cinemático, é, pelo jeito eu vou explicar mesmo.
+            }
+            break;
+        case GLFW_KEY_F1: // Alterna o modo wireframe quando a tecla F1 é pressionada.
+            if (a.renderer->wireframeSupported()) // Se o wireframe for suportado, alterna o estado do wireframe.
+                s.wireframe = !s.wireframe; // Alterna o estado do wireframe.
+            break;
+        case GLFW_KEY_F2: // Alterna a exibição das normais quando a tecla F2 é pressionada.
+            s.normals = !s.normals; // Alterna a exibição das normais.
+            break;
+        case GLFW_KEY_F3: // Alterna o modo adaptativo quando a tecla F3 é pressionada.
+            s.adaptive = !s.adaptive; // Alterna o modo adaptativo.
+            break;
+        case GLFW_KEY_EQUAL: // Aumenta a tesselação máxima quando a tecla = é pressionada. Porque a tecla = ? Só Deus sabe irmão.
+        case GLFW_KEY_KP_ADD: // Aumenta a tesselação máxima quando a tecla + do teclado numérico é pressionada.
+            s.maxTess = std::min(s.maxTess * 2,
+                float(std::min(64u, a.renderer->maxTessellation()))); // Dobra a tesselação máxima, respeitando o limite do renderer.
+            break;
+        case GLFW_KEY_MINUS: // Diminui a tesselação máxima quando a tecla - é pressionada.
+        case GLFW_KEY_KP_SUBTRACT: // Diminui a tesselação máxima quando a tecla - do teclado numérico é pressionada.
+            s.maxTess = std::max(s.maxTess * .5f, 2.f); // Reduz pela metade a tesselação máxima, respeitando o limite mínimo.
+            break;
+        case GLFW_KEY_T: // Diminui a escala de tempo quando a tecla T é pressionada.
+            a.timeScale = std::max(0.03125f, a.timeScale * 0.5f); // Reduz a escala de tempo pela metade, respeitando o limite mínimo.
+            break;
+        case GLFW_KEY_Y: // Restaura a escala de tempo para 1 quando a tecla Y é pressionada.
+            a.timeScale = 1.f; // Define a escala de tempo para 1.
+            break;
     }
 }
 
-
+// Função chamada quando o mouse se move. Atualiza a posição do mouse e, se necessário, ajusta a câmera ou a mira.
+// window: ponteiro para a janela GLFW.
+// x, y: novas coordenadas do mouse.
 static void move(GLFWwindow* window, double x, double y) {
-    auto& a = app(window);
-    auto& s = a.simulation;
+    auto& a = app(window); // Obtém a referência para a aplicação a partir da janela GLFW.
+    auto& s = a.simulation; // Obtém a referência para a simulação da aplicação.
 
     if (a.mouseKnown && !s.cinematicActive) {
         float dx = float(x - a.mouseX);
